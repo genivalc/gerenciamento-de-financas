@@ -1,0 +1,59 @@
+service: gerenciamento-financas-service
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: sa-east-1
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+  primaryInfoSubmission:
+    memorySize: 128
+    description: Submit user primary informations.
+    handler: api/user/primary-info.primaryInfoSubmit
+    events:
+      - http:
+          path: /api/user
+          method: post
+  userExpensesSubmission:
+    memorySize: 128
+    description: Submit user expenses.
+    handler: api/user/expenses.expensesSubmit
+    events:
+      - http:
+          path: /api/user/expenses
+          method: post
+  retrieveUserInfo:
+    memorySize: 128
+    description: Retrieve user informations.
+    handler: api/user/user.retrieve
+    events:
+      - http:
+          path: /api/user/{email_id}
+          method: get
+  retrieveUserExpenses:
+    memorySize: 128
+    description: Retrieve user informations.
+    handler: api/user/user.retrieveExpensesOnDate
+    events:
+      - http:
+          path: /api/user/{email_id}/date/{date}
+          method: get
+plugins:
+  - serverless-offline
+
+
+
